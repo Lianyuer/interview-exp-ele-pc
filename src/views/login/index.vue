@@ -49,7 +49,9 @@ export default {
     async onSubmit() {
       await this.$refs.form.validate()
       const res = await loginFn(this.formData)
-      console.log(res)
+      this.$store.commit('user/setUserToken', res.data.token)
+      this.$message.success('登录成功')
+      this.$router.push('/')
     },
     resetForm() {
       this.$refs.form.resetFields()
@@ -78,6 +80,7 @@ export default {
     }
     .el-card__body {
       .el-form {
+        margin-top: 20px;
         .actions {
           text-align: center;
           ::v-deep .el-form-item__content {
