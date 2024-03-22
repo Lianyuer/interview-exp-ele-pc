@@ -7,8 +7,6 @@
           <el-menu
             :default-active="defaultActive"
             class="el-menu-vertical-demo"
-            @open="handleOpen"
-            @close="handleClose"
             background-color="#545c64"
             text-color="#fff"
             active-text-color="#ffd04b"
@@ -32,7 +30,7 @@
               <img :src="userInfo.avatar" alt="" />
               <div class="username">{{ userInfo.name }}</div>
             </div>
-            <el-popconfirm title="这是一段内容确定删除吗？">
+            <el-popconfirm title="这是一段内容确定删除吗？" @confirm="logoutFn">
               <i class="el-icon-switch-button exitBtn" slot="reference"></i>
             </el-popconfirm>
           </div>
@@ -55,9 +53,15 @@ export default {
       userInfo: {}
     }
   },
+  methods: {
+    logoutFn() {
+      this.$store.commit('user/logout')
+      this.$message.success('退出成功')
+      this.$router.push('/login')
+    }
+  },
   async mounted() {
     const { data } = await getUserInfo()
-    console.log(data)
     this.userInfo = data
   }
 }
@@ -93,6 +97,7 @@ export default {
         display: flex;
         justify-content: end;
         align-items: center;
+        box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1);
 
         .right {
           height: 100%;

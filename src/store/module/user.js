@@ -1,5 +1,5 @@
 import { loginFn } from '@/api/user'
-import { getToken, setToken } from '@/utils/storage'
+import { getToken, setToken, removeToken } from '@/utils/storage'
 
 export default {
   namespaced: true,
@@ -10,6 +10,10 @@ export default {
     setUserToken(state, token) {
       state.token = token
       setToken(token)
+    },
+    logout(state) {
+      state.token = ''
+      removeToken()
     }
   },
   actions: {
