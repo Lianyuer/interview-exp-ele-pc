@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import { getToken } from '@/utils/storage'
+import { Message } from 'element-ui'
 
 Vue.use(VueRouter)
 
@@ -19,6 +21,22 @@ const routes = [
 
 const router = new VueRouter({
   routes
+})
+
+// 白名单
+const whiteList = ['/login']
+router.beforeEach((to, from, next) => {
+  const token = getToken()
+  if (whiteList.includes(to.path)) {
+    next()
+  } else {
+    if (token) {
+      next()
+    } else {
+      Message.error('token错误，请重新登录')
+      next('/login')
+    }
+  }
 })
 
 export default router
