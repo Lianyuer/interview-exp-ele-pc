@@ -7,7 +7,12 @@
           <el-input type="text" v-model="formData.username" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input type="password" v-model="formData.password" autocomplete="off"></el-input>
+          <el-input
+            type="password"
+            v-model="formData.password"
+            autocomplete="off"
+            @keyup.enter.native="onSubmit"
+          ></el-input>
         </el-form-item>
         <el-form-item class="actions">
           <el-button type="primary" @click="onSubmit">提交</el-button>
@@ -19,6 +24,7 @@
 </template>
 
 <script>
+import { loginFn } from '@/api/user'
 export default {
   name: 'LoginIndex',
   data() {
@@ -42,9 +48,11 @@ export default {
   methods: {
     async onSubmit() {
       await this.$refs.form.validate()
+      const res = await loginFn(this.formData)
+      console.log(res)
     },
-    async resetForm() {
-      await this.$refs.form.resetFields()
+    resetForm() {
+      this.$refs.form.resetFields()
     }
   }
 }
