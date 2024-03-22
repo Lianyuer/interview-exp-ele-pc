@@ -1,5 +1,8 @@
 <template>
-  <div>我是一级首页架子</div>
+  <div>
+    我是一级首页架子
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
@@ -8,4 +11,4 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped></style>
