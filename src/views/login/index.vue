@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { loginFn } from '@/api/user'
+// import { loginFn } from '@/api/user'
 export default {
   name: 'LoginIndex',
   data() {
@@ -48,8 +48,9 @@ export default {
   methods: {
     async onSubmit() {
       await this.$refs.form.validate()
-      const res = await loginFn(this.formData)
-      this.$store.commit('user/setUserToken', res.data.token)
+      // const res = await loginFn(this.formData)
+      // this.$store.commit('user/setUserToken', res.data.token)
+      this.$store.dispatch('user/loginAction', this.formData)
       this.$message.success('登录成功')
       this.$router.push('/')
     },

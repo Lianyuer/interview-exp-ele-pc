@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import { getToken } from '@/utils/storage'
+import store from '@/store'
 import { Message } from 'element-ui'
 
 Vue.use(VueRouter)
@@ -26,10 +26,10 @@ const router = new VueRouter({
 // 白名单
 const whiteList = ['/login']
 router.beforeEach((to, from, next) => {
-  const token = getToken()
   if (whiteList.includes(to.path)) {
     next()
   } else {
+    const token = store.state.user.token
     if (token) {
       next()
     } else {
