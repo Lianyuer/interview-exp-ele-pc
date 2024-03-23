@@ -70,12 +70,29 @@
           <el-button @click="resetForm">重置</el-button>
         </el-form-item>
       </el-form>
+      <div class="previewBox" v-else>
+        <div class="header">
+          <h3 class="headline">{{ currentArticle.stem }}</h3>
+          <div class="info">
+            <img :src="currentArticle.avatar" alt="" />
+            <div class="right">
+              <div class="create">
+                {{ currentArticle.creator }} | {{ currentArticle.createdAt }}
+              </div>
+              <div class="data">
+                点赞数 {{ currentArticle.likeCount }} | 阅读数 {{ currentArticle.views }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="content" v-html="currentArticle.content"></div>
+      </div>
     </el-drawer>
   </div>
 </template>
 
 <script>
-import { getArticleList, createArticle } from '@/api/article'
+import { getArticleList, createArticle, getArticleById } from '@/api/article'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
@@ -135,6 +152,11 @@ export default {
       this.isShowDrawer = true
       this.drawerType = type
       console.log(type, id)
+      if (type === 'preview') {
+        const res = await getArticleById(id)
+        this.currentArticle = res.data
+        console.log(this.currentArticle)
+      }
     },
     handleClose(done) {
       this.$confirm('确认关闭？')

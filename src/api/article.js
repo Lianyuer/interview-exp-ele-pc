@@ -17,3 +17,8 @@ export const createArticle = ({ stem, content }) => {
     content
   })
 }
+
+// 根据id获取面经
+export const getArticleById = (id) => {
+  return request.get('/admin/interview/show', { params: { id } })
+}
