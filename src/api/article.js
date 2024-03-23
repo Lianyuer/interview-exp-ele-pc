@@ -22,3 +22,12 @@ export const createArticle = ({ stem, content }) => {
 export const getArticleById = (id) => {
   return request.get('/admin/interview/show', { params: { id } })
 }
+
+// 修改提交
+export const updateArticle = ({ id, stem, content }) => {
+  return request.put('/admin/interview/update', {
+    id,
+    stem,
+    content
+  })
+}

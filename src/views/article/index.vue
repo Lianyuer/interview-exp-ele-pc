@@ -20,8 +20,8 @@
           <el-table-column prop="createdAt" label="更新时间"></el-table-column>
           <el-table-column label="操作">
             <template #default="scope">
-              <i class="el-icon-view icon" @click="openDrawer('preview', scope.row.id)"></i>
-              <i class="el-icon-edit icon" @click="openDrawer('edit', scope.row.id)"></i>
+              <i class="el-icon-view icon" @click="openDrawer('preview', scope.row)"></i>
+              <i class="el-icon-edit icon" @click="openDrawer('edit', scope.row)"></i>
               <i class="el-icon-delete icon"></i>
             </template>
           </el-table-column>
@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import { getArticleList, createArticle, getArticleById } from '@/api/article'
+import { getArticleList, createArticle, getArticleById, updateArticle } from '@/api/article'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
@@ -148,14 +148,18 @@ export default {
       this.current = val
       this.initData()
     },
-    async openDrawer(type, id) {
+    async openDrawer(type, data) {
       this.isShowDrawer = true
       this.drawerType = type
-      console.log(type, id)
+      console.log(type, data.id)
       if (type === 'preview') {
-        const res = await getArticleById(id)
+        const res = await getArticleById(data.id)
         this.currentArticle = res.data
         console.log(this.currentArticle)
+      }
+      if (type === 'edit') {
+        const res = await getArticleById(data.id)
+        this.formData = res.data
       }
     },
     handleClose(done) {
@@ -168,12 +172,20 @@ export default {
     },
     async onSubmit() {
       await this.$refs.form.validate()
-      const res = await createArticle(this.formData)
-      this.$message.success('新增成功')
-      this.isShowDrawer = false
-      this.resetForm()
-      this.initData()
-      console.log(res)
+      if (this.drawerType === 'add') {
+        await createArticle(this.formData)
+        this.$message.success('新增成功')
+        this.isShowDrawer = false
+        this.resetForm()
+        this.initData()
+      }
+      if (this.drawerType === 'edit') {
+        await updateArticle(this.formData)
+        this.$message.success('修改成功')
+        this.isShowDrawer = false
+        this.resetForm()
+        this.initData()
+      }
     },
     resetForm() {
       this.$refs.form.resetFields()
@@ -220,13 +232,19 @@ export default {
     }
   }
 
-  .el-form-item__content {
+  .el-drawer__body {
+    .el-form {
+      padding-right: 50px;
+    }
+  }
+
+  ::v-deep .el-form-item__content {
     .quill-editor {
       display: flex;
       flex-direction: column;
-      height: 400px;
+      height: 600px;
       .ql-container {
-        flex: 1;
+        overflow: hidden;
       }
     }
   }
