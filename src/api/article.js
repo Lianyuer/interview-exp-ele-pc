@@ -31,3 +31,10 @@ export const updateArticle = ({ id, stem, content }) => {
     content
   })
 }
+
+// 删除面经
+export const delArticle = (id) => {
+  return request.delete('/admin/interview/remove', {
+    data: { id }
+  })
+}

@@ -22,7 +22,9 @@
             <template #default="scope">
               <i class="el-icon-view icon" @click="openDrawer('preview', scope.row)"></i>
               <i class="el-icon-edit icon" @click="openDrawer('edit', scope.row)"></i>
-              <i class="el-icon-delete icon"></i>
+              <el-popconfirm title="这是一段内容确定删除吗？" @confirm="del(scope.row.id)">
+                <i class="el-icon-delete icon" slot="reference"></i>
+              </el-popconfirm>
             </template>
           </el-table-column>
         </el-table>
@@ -32,8 +34,8 @@
             @current-change="handleCurrentChange"
             background
             :current-page="current"
-            :page-sizes="[10, 20, 30, 40]"
-            :page-size="100"
+            :page-sizes="[3, 10, 20, 30, 40]"
+            :page-size="pageSize"
             layout="total, sizes, prev, pager, next, jumper"
             :total="totalCount"
           ></el-pagination>
@@ -43,7 +45,7 @@
 
     <el-drawer
       :title="titleType"
-      size="60%"
+      size="50%"
       :visible.sync="isShowDrawer"
       :direction="direction"
       :before-close="handleClose"
@@ -92,7 +94,13 @@
 </template>
 
 <script>
-import { getArticleList, createArticle, getArticleById, updateArticle } from '@/api/article'
+import {
+  getArticleList,
+  createArticle,
+  getArticleById,
+  updateArticle,
+  delArticle
+} from '@/api/article'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
@@ -148,10 +156,25 @@ export default {
       this.current = val
       this.initData()
     },
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+        .then(() => {
+          done()
+          this.resetForm()
+        })
+        .catch(() => {})
+    },
+    async del(id) {
+      await delArticle(id)
+      this.$message.success('删除成功')
+      if ((this.formData.length = 1 & (this.current > 1))) {
+        this.current--
+      }
+      this.initData()
+    },
     async openDrawer(type, data) {
       this.isShowDrawer = true
       this.drawerType = type
-      console.log(type, data.id)
       if (type === 'preview') {
         const res = await getArticleById(data.id)
         this.currentArticle = res.data
@@ -161,14 +184,6 @@ export default {
         const res = await getArticleById(data.id)
         this.formData = res.data
       }
-    },
-    handleClose(done) {
-      this.$confirm('确认关闭？')
-        .then(() => {
-          done()
-          this.resetForm()
-        })
-        .catch(() => {})
     },
     async onSubmit() {
       await this.$refs.form.validate()
