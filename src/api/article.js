@@ -9,3 +9,11 @@ export const getArticleList = (current, pageSize) => {
     }
   })
 }
+
+// 添加面经
+export const createArticle = ({ stem, content }) => {
+  return request.post('/admin/interview/create', {
+    stem,
+    content
+  })
+}
