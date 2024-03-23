@@ -154,7 +154,15 @@ export default {
         radar: {
           // shape: 'circle',
           indicator: [
-            { name: 'Chrome', max: 100 },
+            {
+              name: 'Chrome',
+              max: 100,
+              axisLabel: {
+                show: true,
+                formatter: '{value}%',
+                color: '#ccc'
+              }
+            },
             { name: 'Explorer', max: 100 },
             { name: 'Edge', max: 100 },
             { name: 'Oprear', max: 100 },
